@@ -24,12 +24,13 @@
         {
             "id": "e_value",
             "optional": false,
-            "advanced": false,
+            "advanced": true,
             "allow_multiple": false,
             "default_values": [ "" ],
             "field_type": "text",
             "text_options" : {
-                "valid_ws_types" : [ "KBaseGenomes.ContigSet" ]
+                "validate_as": "float",
+                "min_integer" : 0
             }
         }
     ],
