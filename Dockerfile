@@ -31,6 +31,8 @@ RUN ruby -e 'require "rubygems"; \
  && ruby --version \
  && parallel --version
 
+RUN mkdir /app_dir
+
 # -----------------------------------------
 
 COPY ./ /kb/module

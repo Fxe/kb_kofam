@@ -2,6 +2,7 @@
 #BEGIN_HEADER
 import logging
 import os
+import subprocess
 
 from installed_clients.KBaseReportClient import KBaseReport
 from installed_clients.WorkspaceClient import Workspace
@@ -51,10 +52,46 @@ class kb_kofam:
         """
         # ctx is the context object
 
-        print(params)
-
         # return variables are: output
         #BEGIN run_kb_kofam
+
+        print(params)
+
+        TIMEOUT = 3600 * 24  # 1 hour X
+
+        param_f = 'mapper'
+        profiles = ''
+
+        job_dir = '/app_dir'
+        if os.path.exists(job_dir):
+            raise ValueError(f'Invalid job dir: {job_dir} exists')
+        os.makedirs(job_dir)
+
+        # Build cmd
+        cmd = [
+            '/opt/kofam_scan/exec_annotation',
+            '--cpu', str(40),
+            '-p', f'/db/profiles/{profiles}',
+            '-k', f'/db/profiles/{profiles}.txt',
+            '-f', param_f,
+            '--tmp-dir', f'{job_dir}/',
+            '-o', f'{job_dir}/output',
+            f'{job_dir}/input.faa',
+        ]
+
+        result = subprocess.run(
+            cmd,
+            capture_output=True,
+            text=True,
+            timeout=TIMEOUT
+        )
+
+        print(result)
+
+        # check if output exists
+
+        # collect output and add annotation
+
         report = KBaseReport(self.callback_url)
         report_info = report.create({'report': {'objects_created':[],
                                                 'text_message': params['parameter_1']},
