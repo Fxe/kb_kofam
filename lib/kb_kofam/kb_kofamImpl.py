@@ -4,6 +4,7 @@ import logging
 import os
 
 from installed_clients.KBaseReportClient import KBaseReport
+from installed_clients.WorkspaceClient import Workspace
 #END_HEADER
 
 
@@ -50,7 +51,7 @@ class kb_kofam:
         """
         # ctx is the context object
 
-        print()
+        print(params)
 
         # return variables are: output
         #BEGIN run_kb_kofam

@@ -14,6 +14,14 @@ RUN apt-get update \
       parallel \
       wget
 
+ADD ./hmmer.tar.gz /opt/
+WORKDIR /opt/hmmer-3.4/
+RUN ./configure
+RUN make install
+
+# clean up apt cache to keep the image small
+RUN rm -rf /var/lib/apt/lists/*
+
 # Verify Ruby is new enough (>= 2.4)
 # (Gem::Version avoids issues like "2.10" vs float comparisons)
 RUN ruby -e 'require "rubygems"; \
