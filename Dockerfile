@@ -6,8 +6,22 @@ MAINTAINER KBase Developer
 # install line here, a git checkout to download code, or run any other
 # installation scripts.
 
-# RUN apt-get update
+# Install Ruby and GNU Parallel
+RUN apt-get update \
+ && apt-get install -y --no-install-recommends \
+      build-essential \
+      ruby-full \
+      parallel \
+      wget
 
+# Verify Ruby is new enough (>= 2.4)
+# (Gem::Version avoids issues like "2.10" vs float comparisons)
+RUN ruby -e 'require "rubygems"; \
+  min=Gem::Version.new("2.4"); \
+  cur=Gem::Version.new(RUBY_VERSION); \
+  abort("Ruby too old: #{RUBY_VERSION}") if cur < min' \
+ && ruby --version \
+ && parallel --version
 
 # -----------------------------------------
 

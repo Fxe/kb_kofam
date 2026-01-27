@@ -49,6 +49,9 @@ class kb_kofam:
            "report_name" of String, parameter "report_ref" of String
         """
         # ctx is the context object
+
+        print()
+
         # return variables are: output
         #BEGIN run_kb_kofam
         report = KBaseReport(self.callback_url)

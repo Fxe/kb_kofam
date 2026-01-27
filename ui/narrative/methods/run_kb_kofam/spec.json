@@ -3,7 +3,7 @@
     "authors": [
         "filipeliu"
     ],
-    "contact": "",
+    "contact" : "https://www.kbase.us/support/",
     "categories": ["active"],
     "widgets": {
         "input": null,
@@ -11,14 +11,25 @@
     },
     "parameters": [ 
         {
-            "id": "parameter_1",
-            "optional": true,
+            "id": "input_genome",
+            "optional": false,
             "advanced": false,
             "allow_multiple": false,
             "default_values": [ "" ],
             "field_type": "text",
-            "text_options": {
-                "valid_ws_types": [ ]
+            "text_options" : {
+                "valid_ws_types" : [ "KBaseGenomes.Genome" ]
+            }
+        },
+        {
+            "id": "e_value",
+            "optional": false,
+            "advanced": false,
+            "allow_multiple": false,
+            "default_values": [ "" ],
+            "field_type": "text",
+            "text_options" : {
+                "valid_ws_types" : [ "KBaseGenomes.ContigSet" ]
             }
         }
     ],
@@ -35,8 +46,11 @@
                     "narrative_system_variable": "workspace_id",
                     "target_property": "workspace_id"
                 },{
-                    "input_parameter": "parameter_1",
-                    "target_property": "parameter_1"
+                    "input_parameter": "input_genome",
+                    "target_property": "input_genome"
+                },{
+                    "input_parameter": "e_value",
+                    "target_property": "e_value"
                 }
             ],
             "output_mapping": [
