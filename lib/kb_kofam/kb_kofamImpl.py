@@ -6,6 +6,7 @@ import subprocess
 
 from installed_clients.KBaseReportClient import KBaseReport
 from installed_clients.WorkspaceClient import Workspace
+from installed_clients.DataFileUtilClient import DataFileUtil
 #END_HEADER
 
 
@@ -39,6 +40,8 @@ class kb_kofam:
         self.shared_folder = config['scratch']
         logging.basicConfig(format='%(created)s %(levelname)s: %(message)s',
                             level=logging.INFO)
+        #self._ws = Workspace(workspace_url, token=user_token)
+        self.dfu = DataFileUtil(self.callback_url)
         #END_CONSTRUCTOR
         pass
 
@@ -56,45 +59,63 @@ class kb_kofam:
         #BEGIN run_kb_kofam
 
         print(params)
+        print(ctx)
 
-        TIMEOUT = 3600 * 24  # 1 hour X
+        dfu_get_result = self.dfu.get_objects({'object_refs': [f'{params["workspace_id"]}/{params["input_genome"]}']})
+        genome_object = dfu_get_result['data'][0]['data']
+
+        features = {}
+
+        for f in genome_object['features']:
+            protein_translation = f.get('protein_translation')
+            feature_id = f['id']
+            if protein_translation:
+                if feature_id not in features:
+                    features[feature_id] = protein_translation
+                else:
+                    raise ValueError('Duplicate feature id:', feature_id)
+
+        with open('/tmp/input_genome.faa', 'w') as fh:
+            for i, s in features.items():
+                fh.write(f'>{i}\n')
+                fh.write(f'{s}\n')
+
+        print('/tmp/input_genome.faa created')
 
         param_f = 'mapper'
         profiles = ''
 
-        job_dir = '/app_dir'
-        if os.path.exists(job_dir):
-            raise ValueError(f'Invalid job dir: {job_dir} exists')
-        os.makedirs(job_dir)
-
         # Build cmd
         cmd = [
             '/opt/kofam_scan/exec_annotation',
-            '--cpu', str(40),
-            '-p', f'/db/profiles/{profiles}',
-            '-k', f'/db/profiles/{profiles}.txt',
-            '-f', param_f,
-            '--tmp-dir', f'{job_dir}/',
-            '-o', f'{job_dir}/output',
-            f'{job_dir}/input.faa',
+            #'--cpu', str(40),
+            #'-p', f'/db/profiles/{profiles}',
+            #'-k', f'/db/profiles/{profiles}.txt',
+            #'-f', param_f,
+            #'--tmp-dir', f'{job_dir}/',
+            #'-o', f'{job_dir}/output',
+            #'/tmp/input_genome.faa',
         ]
 
         result = subprocess.run(
             cmd,
             capture_output=True,
-            text=True,
-            timeout=TIMEOUT
+            text=True
         )
 
         print(result)
+
+        print(result.returncode)
+        print(result.stdout.strip() if result.stdout else '')
+        print(result.stderr.strip() if result.stderr else '')
 
         # check if output exists
 
         # collect output and add annotation
 
         report = KBaseReport(self.callback_url)
-        report_info = report.create({'report': {'objects_created':[],
-                                                'text_message': params['parameter_1']},
+        report_info = report.create({'report': {'objects_created': [],
+                                                'text_message': params['input_genome']},
                                                 'workspace_name': params['workspace_name']})
         output = {
             'report_name': report_info['name'],
