@@ -12,6 +12,7 @@ RUN apt-get update \
       build-essential \
       ruby-full \
       parallel \
+      curl \
       wget
 
 ADD ./hmmer.tar.gz /opt/
