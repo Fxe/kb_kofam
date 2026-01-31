@@ -1,5 +1,5 @@
-#!/usr/bin/env bash
-set -euo pipefail
+#!/bin/sh
+set -eu
 
 DATA_DIR="/data"
 READY_FILE="${DATA_DIR}/__READY__"
