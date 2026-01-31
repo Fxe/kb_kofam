@@ -83,11 +83,13 @@ class kb_kofam:
         print('/tmp/input_genome.faa created')
 
         param_f = 'mapper'
-        profiles = ''
+        profiles = '/data/profiles'
+
+        print(os.listdir(profiles))
 
         # Build cmd
         cmd = [
-            '/opt/kofam_scan/exec_annotation',
+            '/kb/module/kofam_scan/exec_annotation',
             #'--cpu', str(40),
             #'-p', f'/db/profiles/{profiles}',
             #'-k', f'/db/profiles/{profiles}.txt',
