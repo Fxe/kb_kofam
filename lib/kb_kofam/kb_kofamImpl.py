@@ -83,20 +83,23 @@ class kb_kofam:
         print('/tmp/input_genome.faa created')
 
         param_f = 'mapper'
+        profiles_target = '2025-11-03'
         profiles = '/data/profiles'
 
         print(os.listdir(profiles))
 
+        output_file = f'{self.shared_folder}/output.tsv'
+
         # Build cmd
         cmd = [
             '/kb/module/kofam_scan/exec_annotation',
-            #'--cpu', str(40),
-            #'-p', f'/db/profiles/{profiles}',
-            #'-k', f'/db/profiles/{profiles}.txt',
-            #'-f', param_f,
-            #'--tmp-dir', f'{job_dir}/',
-            #'-o', f'{job_dir}/output',
-            #'/tmp/input_genome.faa',
+            '--cpu', str(40),
+            '-p', f'/data/profiles/{profiles_target}',
+            '-k', f'/data/profiles/{profiles_target}.txt',
+            '-f', param_f,
+            '--tmp-dir', f'{self.shared_folder}/',
+            '-o', output_file,
+            '/tmp/input_genome.faa',
         ]
 
         result = subprocess.run(
@@ -110,10 +113,21 @@ class kb_kofam:
         print(result.returncode)
         print(result.stdout.strip() if result.stdout else '')
         print(result.stderr.strip() if result.stderr else '')
-
         # check if output exists
+        feature_to_ko = {}
+        if os.path.exists(output_file):
+            # collect output and add annotation
+            with open(output_file, 'r') as fh:
+                line = fh.readline()
+                while line:
+                    p = line.strip().split()
+                    if len(p) == 2:
+                        feature_id, ko = p
+                        feature_to_ko[feature_id] = ko
+                    line = fh.readline()
 
-        # collect output and add annotation
+        for feature_id, ko in feature_to_ko.items():
+            print(feature_id, ko)
 
         report = KBaseReport(self.callback_url)
         report_info = report.create({'report': {'objects_created': [],
