@@ -14,8 +14,8 @@ mkdir -p "${DATA_DIR}/profiles"
 # Download archive if not already present
 if [ ! -f "${ARCHIVE}" ]; then
     echo "Downloading dataset..."
-    curl -sSL -C - --retry 10 --retry-all-errors --retry-delay 5 \
-        --connect-timeout 30 --max-time 0 "${URL}" -o "${ARCHIVE}"
+    curl -sSL -C - --retry 10 --retry-delay 5 \
+        --connect-timeout 30 "${URL}" -o "${ARCHIVE}"
 else
     echo "Archive already downloaded, skipping download."
 fi
