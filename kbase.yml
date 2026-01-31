@@ -13,3 +13,5 @@ module-version:
 owners:
     [filipeliu]
 
+data-version:
+    2025-11-03
