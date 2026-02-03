@@ -1,4 +1,6 @@
 .idea
+lib/kb_kofam/kb_kofamImpl.py.bak*
+lib/kb_kofam/kb_kofamServer.py
 
 test_local
 sdk.cfg

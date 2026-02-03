@@ -13,4 +13,5 @@ module kb_kofam {
     */
     funcdef run_kb_kofam(mapping<string,UnspecifiedObject> params) returns (ReportResults output) authentication required;
 
+    funcdef annotate_proteins(mapping<string,string> proteins) returns (string) authentication required;
 };

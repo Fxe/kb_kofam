@@ -26,8 +26,8 @@ class kb_kofam:
     # the latter method is running.
     ######################################### noqa
     VERSION = "0.0.1"
-    GIT_URL = ""
-    GIT_COMMIT_HASH = ""
+    GIT_URL = "git@github.com:Fxe/kb_kofam.git"
+    GIT_COMMIT_HASH = "653e178b3f17df9c6c7abdab823e1d4e07d11496"
 
     #BEGIN_CLASS_HEADER
     #END_CLASS_HEADER
@@ -54,7 +54,6 @@ class kb_kofam:
            "report_name" of String, parameter "report_ref" of String
         """
         # ctx is the context object
-
         # return variables are: output
         #BEGIN run_kb_kofam
 
@@ -145,6 +144,69 @@ class kb_kofam:
                              'output is not type dict as required.')
         # return the results
         return [output]
+
+    def annotate_proteins(self, ctx, proteins):
+        """
+        :param proteins: instance of mapping from String to String
+        :returns: instance of String
+        """
+        # ctx is the context object
+        # return variables are: returnVal
+        #BEGIN annotate_proteins
+        with open('/tmp/input_genome.faa', 'w') as fh:
+            for i, s in proteins.items():
+                fh.write(f'>{i}\n')
+                fh.write(f'{s}\n')
+
+        print('/tmp/input_genome.faa created')
+
+        param_f = 'mapper'
+        profiles_target = '2025-11-03'
+        profiles = '/data/profiles'
+
+        print(os.listdir(profiles))
+
+        output_file = f'{self.shared_folder}/output.tsv'
+
+        # Build cmd
+        cmd = [
+            '/kb/module/kofam_scan/exec_annotation',
+            '--cpu', str(40),
+            '-p', f'/data/profiles/{profiles_target}',
+            '-k', f'/data/profiles/{profiles_target}.txt',
+            '-f', param_f,
+            '--tmp-dir', f'{self.shared_folder}/',
+            '-o', output_file,
+            '/tmp/input_genome.faa',
+        ]
+
+        result = subprocess.run(
+            cmd,
+            capture_output=True,
+            text=True
+        )
+
+        print(result)
+
+        print(result.returncode)
+        print(result.stdout.strip() if result.stdout else '')
+        print(result.stderr.strip() if result.stderr else '')
+
+        returnVal = ""
+        # check if output exists
+        if os.path.exists(output_file):
+            # collect output and add annotation
+            with open(output_file, 'r') as fh:
+                returnVal = fh.read()
+
+        #END annotate_proteins
+
+        # At some point might do deeper type checking...
+        if not isinstance(returnVal, str):
+            raise ValueError('Method annotate_proteins return value ' +
+                             'returnVal is not type str as required.')
+        # return the results
+        return [returnVal]
     def status(self, ctx):
         #BEGIN_STATUS
         returnVal = {'state': "OK",
