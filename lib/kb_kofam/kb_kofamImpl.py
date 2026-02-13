@@ -153,6 +153,8 @@ class kb_kofam:
         # ctx is the context object
         # return variables are: returnVal
         #BEGIN annotate_proteins
+        print('[kb_kofam] - /tmp contents:', os.listdir('/tmp'))
+
         with open('/tmp/input_genome.faa', 'w') as fh:
             for i, s in proteins.items():
                 fh.write(f'>{i}\n')
@@ -164,7 +166,7 @@ class kb_kofam:
         profiles_target = '2025-11-03'
         profiles = '/data/profiles'
 
-        print(os.listdir(profiles))
+        print('profiles', os.listdir(profiles))
 
         output_file = f'{self.shared_folder}/output.tsv'
 
@@ -186,11 +188,13 @@ class kb_kofam:
             text=True
         )
 
-        print(result)
+        #print(result)
 
-        print(result.returncode)
-        print(result.stdout.strip() if result.stdout else '')
-        print(result.stderr.strip() if result.stderr else '')
+        #print(result.returncode)
+        #print(result.stdout.strip() if result.stdout else '')
+        #print(result.stderr.strip() if result.stderr else '')
+
+        print('[kb_kofam] - /tmp contents:', os.listdir('/tmp'))
 
         returnVal = ""
         # check if output exists
